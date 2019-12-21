@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tensorflow.js playground</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui;
+        }
+        .app {
+            max-width: 900px;
+            margin: 50px auto;
+        }
+        ul {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        li {
+            list-style-type: none;
+            text-align: center;
+        }
+        img {
+            width: 300px;
+        }
+        button {
+            background: #222;
+            color: white;
+            width: 300px;
+            height: 80px;
+            line-height: 80px;
+            text-align: center;
+            margin-bottom: 50px;
+            display: block;
+            margin: 0 auto 50px;
+            font-size: 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: .9;
+        }
+        .tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        span {
+            text-align: center;
+            margin-right: 10px;
+            padding: 5px 10px;
+            background: #efefefef;
+            border-radius: 5px;
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <ul>
+        <li><img src="./images/img-01.jpg" alt=""></li>
+        <li><img src="./images/img-02.jpg" alt=""></li>
+        <li><img src="./images/img-03.jpg" alt=""></li>
+        <li><img src="./images/img-04.jpg" alt=""></li>
+        <li><img src="./images/img-05.jpg" alt=""></li>
+        <li><img src="./images/img-06.jpg" alt=""></li>
+        <li><img src="./images/img-07.jpg" alt=""></li>
+        <li><img src="./images/img-08.jpg" alt=""></li>
+    </ul>
+    <button onclick="onClickAnalyseButton()">Analyse!!</button>
+    <div class="tags"></div>
+</div>
+    
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
+<script>
+const tags = document.querySelector('.tags')
+const images = document.querySelectorAll('img')
+
+const startAnalyse = () => {
+    images.forEach(image => {
+        analyseImage(image)
+    })
+}
+
+const onClickAnalyseButton = () => {
+    startAnalyse()
+}
+
+const analyseImage = async image => {
+    await cocoSsd.load().then(model => {
+        model.detect(image).then(predictions => {
+            console.log(predictions)
+            const analyseClass = predictions.map(prediction => prediction.class)
+            if (analyseClass.length > 0) {
+                const data = document.createElement('span')
+                data.innerText = analyseClass
+                tags.appendChild(data)
+            }
+        })
+    })
+}
+</script>
+</html>
